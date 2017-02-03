@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4385ef" >
+
+    <Button
+        android:id="@+id/first_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="First"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"/>
+
+        <ImageView
+            android:id="@+id/news1ImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/test1"
+            android:layout_above="@+id/news1Title"
+            android:scaleType="centerCrop"
+            />
+
+    <TextView
+        android:id="@+id/news1Title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/news1Desc"
+        android:text="Trump plots overhaul of financial market rules"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:fontFamily="serif"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        />
+
+    <TextView
+        android:id="@+id/news1Desc"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_above="@+id/dividerView"
+        android:text="It marks the first time the new administration has weighed in substantively in the debate over how to regulate the world’s largest financial markets."
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:fontFamily="serif"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="13sp"
+        />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="60sp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        />
+
+    <View
+        android:id="@+id/dividerView"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/action_bar_bg"
+        ></View>
+
+    <TextView
+        android:id="@+id/news2Title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@+id/news2Desc"
+        android:text="Howard escapes Houston a winner after Hardaway's late heroics"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:fontFamily="serif"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        />
+
+    <TextView
+        android:id="@+id/news2Desc"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:text="Dwight Howard's return to Houston was a success, thanks to teammate Tim Hardaway Jr.'s career night -- and the Rockets squandering a 20-point lead."
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:fontFamily="serif"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="13sp"
+        />
+
+    <ImageView
+        android:id="@+id/news2ImageView"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:src="@drawable/test2"
+        android:layout_below="@+id/dividerView"
+        android:layout_marginTop="5dp"
+        android:layout_above="@+id/news2Title"
+        android:scaleType="centerCrop"
+        />
+
+    <Button
+        android:id="@+id/last_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible"
+        />
+
+</RelativeLayout>
