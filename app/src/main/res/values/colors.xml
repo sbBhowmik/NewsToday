@@ -6,4 +6,6 @@
     <color name="actionbar_color">#bf360c</color>
     <color name="drawer_arrow_second_color">#303f9f</color>
     <color name="drawer_arrow_first_color">#ffffff</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

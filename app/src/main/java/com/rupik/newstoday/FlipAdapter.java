@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,9 @@ public class FlipAdapter extends BaseAdapter implements View.OnClickListener {
     public interface Callback{
         public void onPageRequested(int page);
     }
+
+    ArrayList<NewsItem> newsDataSource;
+    Context mContext;
 
     static class Item {
         static long id = 0;
@@ -40,11 +46,11 @@ public class FlipAdapter extends BaseAdapter implements View.OnClickListener {
     private Callback callback;
     private List<Item> items = new ArrayList<Item>();
 
-    public FlipAdapter(Context context) {
+    public FlipAdapter(Context context,  ArrayList<NewsItem> newsDataSource) {
         inflater = LayoutInflater.from(context);
-        for(int i = 0 ; i<10 ; i++){
-            items.add(new Item());
-        }
+
+        mContext = context;
+        this.newsDataSource = newsDataSource;
     }
 
     public void setCallback(Callback callback) {
@@ -69,26 +75,31 @@ public class FlipAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public int getCount() {
-        return items.size();
+        return newsDataSource.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return i;
+        NewsItem newsItem = newsDataSource.get(i);
+        return newsItem;
     }
 
     @Override
     public long getItemId(int i) {
-        return items.get(i).getId();
+        return i;
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView text;
+        TextView descTV;
+        ImageView newsImageView;
         Button firstPage;
         Button lastPage;
         public MyViewHolder(View v) {
             super(v);
-            text = (TextView) v.findViewById(R.id.text);
+            newsImageView = (ImageView)v.findViewById(R.id.news2ImageView);
+            descTV = (TextView)v.findViewById(R.id.news2Desc);
+            text = (TextView) v.findViewById(R.id.news2Title);
             firstPage = (Button) v.findViewById(R.id.first_page);
             lastPage = (Button) v.findViewById(R.id.last_page);
         }
@@ -104,9 +115,14 @@ public class FlipAdapter extends BaseAdapter implements View.OnClickListener {
             holder.lastPage.setOnClickListener(this);
 
 
+        NewsItem item = newsDataSource.get(i);
+        holder.text.setText(item.getTitle());
+        holder.descTV.setText(item.getDescription());
+        String imageURL = item.getImageUrl();
 
-        //TODO set a text with the id as well
-        holder.text.setText(items.get(i).getId()+":"+i);
+        Picasso.with(mContext)
+                .load(imageURL)
+                .into(holder.newsImageView);
 
         return view;
     }

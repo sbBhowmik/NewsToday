@@ -26,6 +26,8 @@ import com.ikimuhendis.ldrawer.ActionBarDrawerToggle;
 //import android.support.v7.app.ActionBarDrawerToggle;
 import com.ikimuhendis.ldrawer.DrawerArrowDrawable;
 
+import java.util.ArrayList;
+
 import se.emilsjolander.flipview.FlipView;
 import se.emilsjolander.flipview.OverFlipMode;
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
     private boolean drawerArrowColor;
     private ListView mDrawerList;
 
-
+    ArrayList<NewsCategory> newsCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,13 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
             ab.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4385ef")));
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.hamburger_icon);
         }
+
+        //
+        Intent intent = this.getIntent();
+        Bundle bundle = intent.getExtras();
+
+        newsCategories = (ArrayList<NewsCategory>) bundle.getSerializable("newsCategories");
+        //
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.navdrawer);
@@ -151,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
 
         // Initialize the ViewPager and set an adapter
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), newsCategories));
 
 // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -216,26 +225,29 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
-        private final String[] TITLES = {"Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid",
-                "Top New Free", "Trending"};
+        ArrayList<NewsCategory> newsCategories;
+//        private final String[] TITLES = {"Categories", "Home", "Top Paid", "Top Free", "Top Grossing", "Top New Paid", "Top New Free", "Trending"};
 
-        MyPagerAdapter(FragmentManager fm) {
+        MyPagerAdapter(FragmentManager fm, ArrayList<NewsCategory> categories) {
             super(fm);
+            newsCategories = categories;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return TITLES[position];
+            NewsCategory cat = newsCategories.get(position);
+            return cat.getCategoryName().toUpperCase();
         }
 
         @Override
         public int getCount() {
-            return TITLES.length;
+            return newsCategories.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            return SuperAwesomeCardFragment.newInstance(position);
+            NewsCategory category = newsCategories.get(position);
+            return SuperAwesomeCardFragment.newInstance(position, category);
         }
     }
 }

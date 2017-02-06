@@ -7,6 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.ArrayList;
 
 import se.emilsjolander.flipview.FlipView;
 import se.emilsjolander.flipview.OverFlipMode;
@@ -23,11 +32,18 @@ public class SuperAwesomeCardFragment extends Fragment{
     private FlipView mFlipView;
     private FlipAdapter mAdapter;
 
-    public static SuperAwesomeCardFragment newInstance(int position) {
+    static NewsCategory mNewsCategory;
+
+    View baseView;
+
+    public static SuperAwesomeCardFragment newInstance(int position, NewsCategory newsCategory) {
         SuperAwesomeCardFragment f = new SuperAwesomeCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
+
+        mNewsCategory = newsCategory;
+
         return f;
     }
 
@@ -41,20 +57,64 @@ public class SuperAwesomeCardFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pager_item,container,false);
         ViewCompat.setElevation(rootView, 50);
-        TextView textView = (TextView) rootView.findViewById(R.id.textView);
-        textView.setText("CARD " + position);
+//        TextView textView = (TextView) rootView.findViewById(R.id.textView);
+//        textView.setText("CARD " + position);
 //Flip View
 
-        mFlipView = (FlipView) rootView.findViewById(R.id.flip_view);
-        mAdapter = new FlipAdapter(getActivity());
+        baseView = rootView;
+
+
+
+        fetchAllNewsInCategory();
+
+        return rootView;
+    }
+
+    ArrayList<NewsItem> newsDataSource;
+
+    void fetchAllNewsInCategory()
+    {
+        for(int i=0;i<mNewsCategory.getNewsSources().size();i++)
+        {
+            NewsSource newsSource = mNewsCategory.getNewsSources().get(i);
+            String urlString = "https://newsapi.org/v1/articles?source=" + newsSource.getId() + "&apiKey=b12b2839c5b84643b117acc78af8c8ba";
+            StringRequest stringRequest = new StringRequest(urlString, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //parse JSON Here ...
+                    DataSourceController dataSourceController = new DataSourceController();
+                    ArrayList<NewsItem> newsItems = dataSourceController.parseNewsItem(response);
+
+                    if(newsDataSource==null)
+                    {
+                        newsDataSource = new ArrayList<>();
+                    }
+                    newsDataSource.addAll(newsItems);
+
+                    displayNewsItems();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_LONG).show();
+//                mProgressWheel.stopSpinning();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            requestQueue.add(stringRequest);
+        }
+    }
+
+    void displayNewsItems()
+    {
+        mFlipView = (FlipView) baseView.findViewById(R.id.flip_view);
+        mAdapter = new FlipAdapter(getActivity(), newsDataSource);
 //        mAdapter.setCallback(getActivity());
         mFlipView.setAdapter(mAdapter);
 //        mFlipView.setOnFlipListener(this);
         mFlipView.peakNext(true);
         mFlipView.setOverFlipMode(OverFlipMode.RUBBER_BAND);
-        mFlipView.setEmptyView(rootView.findViewById(R.id.empty_view));
+        mFlipView.setEmptyView(baseView.findViewById(R.id.empty_view));
 //        mFlipView.setOnOverFlipListener(this);
-
-        return rootView;
     }
 }
