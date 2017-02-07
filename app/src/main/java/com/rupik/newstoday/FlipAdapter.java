@@ -128,9 +128,9 @@ public class FlipAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     public void addItems(int amount) {
-        for(int i = 0 ; i<amount ; i++){
-            items.add(new Item());
-        }
+//        for(int i = 0 ; i<amount ; i++){
+//            items.add(new Item());
+//        }
         notifyDataSetChanged();
     }
 

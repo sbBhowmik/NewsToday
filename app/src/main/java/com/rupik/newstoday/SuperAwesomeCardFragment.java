@@ -32,17 +32,17 @@ public class SuperAwesomeCardFragment extends Fragment{
     private FlipView mFlipView;
     private FlipAdapter mAdapter;
 
-    static NewsCategory mNewsCategory;
+    static ArrayList<NewsCategory> mNewsCategories;;
 
     View baseView;
 
-    public static SuperAwesomeCardFragment newInstance(int position, NewsCategory newsCategory) {
+    public static SuperAwesomeCardFragment newInstance(int position, ArrayList<NewsCategory> newsCategory) {
         SuperAwesomeCardFragment f = new SuperAwesomeCardFragment();
         Bundle b = new Bundle();
         b.putInt(ARG_POSITION, position);
         f.setArguments(b);
 
-        mNewsCategory = newsCategory;
+        mNewsCategories = newsCategory;
 
         return f;
     }
@@ -57,26 +57,30 @@ public class SuperAwesomeCardFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.pager_item,container,false);
         ViewCompat.setElevation(rootView, 50);
-//        TextView textView = (TextView) rootView.findViewById(R.id.textView);
-//        textView.setText("CARD " + position);
+        TextView textView = (TextView) rootView.findViewById(R.id.textView);
+        textView.setText("CARD " + position);
 //Flip View
 
         baseView = rootView;
 
 
 
-        fetchAllNewsInCategory();
+        fetchAllNewsInCategory(position);
 
         return rootView;
     }
 
     ArrayList<NewsItem> newsDataSource;
 
-    void fetchAllNewsInCategory()
+    void fetchAllNewsInCategory(int cPosition)
     {
-        for(int i=0;i<mNewsCategory.getNewsSources().size();i++)
+        NewsCategory newsCategory = mNewsCategories.get(cPosition);
+        for(int i=0;i<newsCategory.getNewsSources().size();i++)
         {
-            NewsSource newsSource = mNewsCategory.getNewsSources().get(i);
+            final NewsSource newsSource = newsCategory.getNewsSources().get(i);
+
+
+
             String urlString = "https://newsapi.org/v1/articles?source=" + newsSource.getId() + "&apiKey=b12b2839c5b84643b117acc78af8c8ba";
             StringRequest stringRequest = new StringRequest(urlString, new Response.Listener<String>() {
                 @Override
@@ -91,7 +95,14 @@ public class SuperAwesomeCardFragment extends Fragment{
                     }
                     newsDataSource.addAll(newsItems);
 
-                    displayNewsItems();
+                    if(newsSource.getCountry().contains("in"))
+                    {
+                        String urlString = "https://newsapi.org/v1/articles?source=" + newsSource.getId() + "&apiKey=b12b2839c5b84643b117acc78af8c8ba&sortBy=latest";
+                        fetchTopNews(urlString);
+                    }
+                    else {
+                        displayNewsItems();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -103,6 +114,34 @@ public class SuperAwesomeCardFragment extends Fragment{
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             requestQueue.add(stringRequest);
         }
+    }
+
+    void fetchTopNews(String urlString)
+    {
+        StringRequest stringRequest = new StringRequest(urlString, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //parse JSON Here ...
+                DataSourceController dataSourceController = new DataSourceController();
+                ArrayList<NewsItem> newsItems = dataSourceController.parseNewsItem(response);
+
+                if(newsDataSource==null)
+                {
+                    newsDataSource = new ArrayList<>();
+                }
+                newsDataSource.addAll(newsItems);
+
+                displayNewsItems();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(),error.getMessage(), Toast.LENGTH_LONG).show();
+//                mProgressWheel.stopSpinning();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
     }
 
     void displayNewsItems()

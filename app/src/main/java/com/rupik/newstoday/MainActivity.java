@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
 
     @Override
     public void onPageRequested(int page) {
-
+        Log.d("","");
     }
 
     @Override
@@ -247,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements FlipAdapter.Callb
         @Override
         public Fragment getItem(int position) {
             NewsCategory category = newsCategories.get(position);
-            return SuperAwesomeCardFragment.newInstance(position, category);
+            return SuperAwesomeCardFragment.newInstance(position, newsCategories);
         }
     }
 }

@@ -81,7 +81,9 @@ public class SplashScreenActivity extends AppCompatActivity {
                     else {
                         categoryNewsSources.add(newsSource);
                     }
-                    category.setNewsSources(categoryNewsSources);
+                    if(newsSource.getLanguage().contains("en")) {
+                        category.setNewsSources(categoryNewsSources);
+                    }
                 }
             }
 
